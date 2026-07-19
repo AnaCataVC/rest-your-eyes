@@ -27,11 +27,11 @@ The app runs quietly in the background using a foreground service. When it detec
   - WindowManager (`SYSTEM_ALERT_WINDOW` / Overlays)
 
 ### 3. Key Learnings
-*(Placeholder: To be filled after development is complete)*
-> Note: What did you learn while building this project? (e.g., handling background services in modern Android, using Jetpack Compose overlays). 
+Building this project taught me how to create a simple yet effective Android application capable of accurately tracking real device usage (screen on/off time) and actively displaying system-level overlay notifications based on that usage to help users build healthier digital habits.
 
-### 4. Live Demo
-*(No live demo available yet. APK release pending).*
+### 4. Product Page
+You can view the official landing page for the project here:
+👉 [https://rest-your-eyes.ana-catalina.com](https://rest-your-eyes.ana-catalina.com)
 
 ### 5. Local Setup Instructions
 To run this project locally on your machine:
@@ -62,11 +62,11 @@ Esta aplicación funciona discretamente en segundo plano. Cuando detecta que has
   - WindowManager (`SYSTEM_ALERT_WINDOW` / Superposición)
 
 ### 3. Aprendizajes Clave
-*(Espacio reservado: Para ser completado al finalizar el desarrollo)*
-> Nota: ¿Qué aprendiste al construir este proyecto? (Ej. manejo de servicios en segundo plano en Android moderno, superposiciones con Jetpack Compose).
+El desarrollo de este proyecto me enseñó a crear una aplicación Android simple pero efectiva, capaz de registrar el uso real del teléfono o tablet (tiempo de pantalla encendida/apagada) y de mostrar notificaciones superpuestas sobre lo que el usuario está haciendo para fomentar hábitos digitales más saludables.
 
-### 4. Demo en Vivo
-*(No hay demo en vivo disponible aún. APK pendiente de publicación).*
+### 4. Página de Producto
+Puedes ver la página web oficial del proyecto aquí:
+👉 [https://rest-your-eyes.ana-catalina.com](https://rest-your-eyes.ana-catalina.com)
 
 ### 5. Instrucciones de Configuración Local
 Para ejecutar este proyecto en tu máquina local:
