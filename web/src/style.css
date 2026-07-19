@@ -1,0 +1,13 @@
+@import "tailwindcss";
+
+body {
+  font-family: 'Inter', sans-serif;
+  overflow-x: hidden;
+  background-color: #09090b; /* Zinc 950 as explicit fallback */
+  color: #f4f4f5; /* Zinc 100 explicit fallback */
+}
+
+.hero-gradient {
+  background: radial-gradient(circle at top right, rgba(139, 92, 246, 0.15), transparent 40%),
+              radial-gradient(circle at bottom left, rgba(124, 58, 237, 0.1), transparent 40%);
+}
