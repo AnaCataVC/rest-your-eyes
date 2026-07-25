@@ -4,3 +4,6 @@ local.properties
 *.iml
 .idea/
 app/build/
+releases/
+keystore.properties
+*.jks
