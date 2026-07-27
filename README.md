@@ -14,7 +14,7 @@
 ### 1. Project Description
 **Rest Your Eyes** is a native Android application designed to prevent eye strain caused by prolonged mobile device usage. It enforces the famous 20-20-20 rule: for every 20 minutes of screen time, you should look at an object 20 feet away for 20 seconds. 
 
-The app runs quietly in the background using a foreground service. When it detects that you have been actively using your phone for the set time limit, it overlays a reminder screen to gently force you to take a break, featuring customizable sound alerts and auto-dismiss options.
+The app runs quietly in the background using a foreground service. When it detects that you have been actively using your phone for the set time limit of continuous screen time (resetting the timer if the screen turns off), it overlays a reminder screen to gently force you to take a break, featuring customizable sound alerts and auto-dismiss options.
 
 ### 2. Technologies Used
 - **Language:** Kotlin
@@ -27,7 +27,7 @@ The app runs quietly in the background using a foreground service. When it detec
   - WindowManager (`SYSTEM_ALERT_WINDOW` / Overlays)
 
 ### 3. Key Learnings
-Building this project taught me how to create a simple yet effective Android application capable of accurately tracking real device usage (screen on/off time) and actively displaying system-level overlay notifications based on that usage to help users build healthier digital habits.
+Building this project taught me how to create a simple yet effective Android application capable of accurately tracking real device usage (continuous screen-on time) and actively displaying system-level overlay notifications based on that usage to help users build healthier digital habits.
 
 ### 4. Product Page
 You can view the official landing page for the project here:
@@ -49,7 +49,7 @@ To run this project locally on your machine:
 ### 1. Descripción del Proyecto
 **Rest Your Eyes** es una aplicación nativa para Android diseñada para prevenir la fatiga visual generada por el uso prolongado de dispositivos móviles. Implementa la famosa regla 20-20-20: por cada 20 minutos de uso de pantalla, debes mirar un objeto a 20 pies de distancia durante 20 segundos.
 
-Esta aplicación funciona discretamente en segundo plano. Cuando detecta que has usado tu teléfono activamente por el tiempo establecido, superpone una pantalla recordatoria para forzarte amablemente a tomar un descanso, con opciones personalizables de sonido y cierre automático.
+Esta aplicación funciona discretamente en segundo plano. Cuando detecta que has usado tu teléfono de forma continua por el tiempo establecido (reiniciando la cuenta a cero si apagas la pantalla), superpone una pantalla recordatoria para forzarte amablemente a tomar un descanso, con opciones personalizables de sonido y cierre automático.
 
 ### 2. Tecnologías Utilizadas
 - **Lenguaje:** Kotlin
