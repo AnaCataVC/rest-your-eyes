@@ -57,12 +57,12 @@ class EyeRestService : Service() {
         if (isScreenOn == screenOn) return
         isScreenOn = screenOn
         
+        accumulatedScreenTimeMs = 0L
         if (screenOn) {
             screenOnTimestamp = System.currentTimeMillis()
             startTimer()
         } else {
             timerJob?.cancel()
-            accumulatedScreenTimeMs += (System.currentTimeMillis() - screenOnTimestamp)
         }
     }
 
