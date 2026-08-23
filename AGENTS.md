@@ -1,18 +1,20 @@
 # Proyecto: Rest Your Eyes
 
 ## 📚 Contexto del Proyecto
-Esta es una aplicación móvil nativa para Android enfocada en el descanso visual de los usuarios ("Rest Your Eyes"). Funciona como un temporizador y recordatorio en segundo plano.
+Esta es una aplicación móvil nativa para Android enfocada en el descanso visual de los usuarios ("Rest Your Eyes"). Funciona como un temporizador y recordatorio en segundo plano bajo la regla 20-20-20. El repositorio está organizado como un **monorepo** que incluye la app móvil y su landing page web.
+
+## 🏗️ Estructura del Monorepo
+- **`/` (Raíz):** Aplicación nativa Android (Kotlin, Jetpack Compose, DataStore, Foreground Services).
+- **`/web`:** Landing page oficial de marketing y distribución (Vite, Tailwind CSS v4, Glassmorphism, desplegada en Vercel).
+- **`/docs`:** Documentación técnica de arquitectura, lecciones aprendidas (ADRs) y referencias externas.
 
 ## 🛠️ Stack Tecnológico
-- **Plataforma:** Android
-- **Lenguaje:** Kotlin
-- **UI:** Jetpack Compose (Material 3)
-- **SDK:** `minSdk = 26` (Android 8.0), `targetSdk = 34` (Android 14)
-- **Almacenamiento Local:** DataStore Preferences
-- **Gestor de Dependencias:** Gradle (Kotlin DSL - `build.gradle.kts`)
+- **Móvil (Android):** Kotlin, Jetpack Compose (Material 3), DataStore Preferences, Gradle Kotlin DSL (`minSdk = 26`, `targetSdk = 34`).
+- **Web:** Vite, Tailwind CSS v4, JavaScript moderno (ES6+), HTML5/CSS3.
+- **Infraestructura:** Vercel (Web), GitHub Releases (Distribución APK).
 
 ## 🚀 Flujo de Producción y Releases (IMPORTANTE)
-Para publicar nuevas versiones o crear _releases_ de esta aplicación, se **DEBE** utilizar un script automatizado local en lugar de ejecutar comandos de Gradle manualmente.
+Para publicar nuevas versiones o crear releases de la app Android, se **DEBE** utilizar el script automatizado local en lugar de comandos manuales de Gradle.
 
 1. **Compilación de Producción:** 
    Nunca generes el APK manualmente. Siempre debes ejecutar el script automatizado en la terminal:
@@ -27,3 +29,4 @@ Para publicar nuevas versiones o crear _releases_ de esta aplicación, se **DEBE
 ## 📱 Consideraciones de Sistema (Android)
 - **Servicios en Segundo Plano (Background Services):** La aplicación utiliza un `ForegroundService` que se inicia automáticamente al arrancar el dispositivo (`BOOT_COMPLETED`). Cualquier cambio en la lógica del servicio debe garantizar su supervivencia y respetar las restricciones de consumo de batería de Android (Doze Mode).
 - **Permisos Sensibles:** Esta aplicación requiere permisos especiales como `SYSTEM_ALERT_WINDOW` (para el Overlay) y `POST_NOTIFICATIONS`. No asumas que los permisos están concedidos, siempre verifica su estado en tiempo de ejecución.
+- **Estándares y Contribución:** Consultar [`CONTRIBUTING.md`](./CONTRIBUTING.md) para convenciones de código Kotlin/Compose, flujo de ramas y Conventional Commits.

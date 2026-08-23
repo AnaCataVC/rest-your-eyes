@@ -10,6 +10,8 @@
 ### 1. Project Description
 This is the official product landing page for the **Rest Your Eyes** Android application. It is designed with a premium, modern aesthetic utilizing glassmorphism and dynamic gradients to showcase the app's features and provide a direct download link.
 
+For detailed technical architecture, see [Web Architecture Documentation](../docs/web-architecture.md).
+
 ### 2. Technologies Used
 - **Framework:** Vite
 - **Styling:** Vanilla CSS & Tailwind CSS v4
@@ -32,6 +34,8 @@ To run this web project locally:
 
 ### 1. Descripción del Proyecto
 Esta es la página oficial de producto para la aplicación Android **Rest Your Eyes**. Está diseñada con una estética moderna y premium utilizando *glassmorphism* y gradientes dinámicos para mostrar las características de la app y proveer un enlace de descarga directo.
+
+Para conocer la arquitectura técnica detallada, consulta la [Documentación de Arquitectura Web](../docs/web-architecture.md).
 
 ### 2. Tecnologías Utilizadas
 - **Framework:** Vite
