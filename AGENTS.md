@@ -1,17 +1,17 @@
 # Proyecto: Rest Your Eyes
 
 ## 📚 Contexto del Proyecto
-Esta es una aplicación móvil nativa para Android enfocada en el descanso visual de los usuarios ("Rest Your Eyes"). Funciona como un temporizador y recordatorio en segundo plano bajo la regla 20-20-20. El repositorio está organizado como un **monorepo** que incluye la app móvil y su landing page web.
+Esta es una aplicación móvil nativa para Android enfocada en el descanso visual de los usuarios ("Rest Your Eyes"). Funciona como un temporizador y recordatorio en segundo plano bajo la regla 20-20-20.
 
-## 🏗️ Estructura del Monorepo
+## 🏗️ Estructura del Repositorio
 - **`/` (Raíz):** Aplicación nativa Android (Kotlin, Jetpack Compose, DataStore, Foreground Services).
-- **`/web`:** Landing page oficial de marketing y distribución (Vite, Tailwind CSS v4, Glassmorphism, desplegada en Vercel).
 - **`/docs`:** Documentación técnica de arquitectura, lecciones aprendidas (ADRs) y referencias externas.
+
+La página de producto se mantiene en el repositorio `projects-hub` (https://github.com/AnaCataVC/projects-hub) y se sirve en https://rest-your-eyes.ana-catalina.com.
 
 ## 🛠️ Stack Tecnológico
 - **Móvil (Android):** Kotlin, Jetpack Compose (Material 3), DataStore Preferences, Gradle Kotlin DSL (`minSdk = 26`, `targetSdk = 34`).
-- **Web:** Vite, Tailwind CSS v4, JavaScript moderno (ES6+), HTML5/CSS3.
-- **Infraestructura:** Vercel (Web), GitHub Releases (Distribución APK).
+- **Infraestructura:** GitHub Releases (Distribución APK).
 
 ## 🚀 Flujo de Producción y Releases (IMPORTANTE)
 Para publicar nuevas versiones o crear releases de la app Android, se **DEBE** utilizar el script automatizado local en lugar de comandos manuales de Gradle.

@@ -6,10 +6,11 @@ Thank you for your interest in contributing to **Rest Your Eyes**! To maintain h
 
 ## 🏗️ Repository Architecture
 
-This repository is structured as a monorepo containing:
+This repository contains:
 - **Root (`/`):** Android native application (Kotlin, Jetpack Compose, DataStore, Foreground Services).
-- **Web (`/web`):** Landing page and web distribution portal (Vite, Tailwind CSS v4).
 - **Docs (`/docs`):** Architectural specifications, technical learnings, and reference guides.
+
+The product page is maintained in the `projects-hub` repository (https://github.com/AnaCataVC/projects-hub) and served at https://rest-your-eyes.ana-catalina.com.
 
 ---
 
@@ -23,10 +24,6 @@ This repository is structured as a monorepo containing:
    - Screen on/off transitions are captured via a dynamic `BroadcastReceiver` (`ScreenStateReceiver`).
    - Any modifications to the background timer or receivers must consider Android battery optimization (Doze Mode) and Android 14+ background execution restrictions.
 4. **Permissions:** Always verify runtime permissions (`POST_NOTIFICATIONS`, `SYSTEM_ALERT_WINDOW`) before invoking service components or attempting to launch overlays.
-
-### Web Landing Page
-1. **Tooling:** Vite, ES modules, Tailwind CSS v4.
-2. **Styling:** Follow the existing glassmorphism design language. Ensure responsive behavior across mobile, tablet, and desktop viewports.
 
 ---
 
