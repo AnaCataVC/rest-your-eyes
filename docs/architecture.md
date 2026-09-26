@@ -1,33 +1,28 @@
 # System Architecture
 
 ## Project Overview (Monorepo)
-The **Rest Your Eyes** project is organized as a monorepo containing both the Android native application and its promotional web landing page.
+The **Rest Your Eyes** project is organized as a monorepo containing the Android native application. Its product page is served from https://rest-your-eyes.ana-catalina.com (hosted outside this repository).
 
 ```mermaid
 graph TD
     subgraph Repo["Rest Your Eyes Repository"]
         Android["Android App (/root)<br/>Kotlin + Jetpack Compose"]
-        Web["Web Landing Page (/web)<br/>Vite + Tailwind CSS v4"]
         Docs["Documentation (/docs)<br/>Architecture & Learnings"]
     end
 
     subgraph CI_CD["Build & Distribution"]
         Script["PowerShell Release Script<br/>(./generate_release.ps1)"]
         GHReleases["GitHub Releases<br/>(RestYourEyes.apk)"]
-        Vercel["Vercel Hosting<br/>(rest-your-eyes.ana-catalina.com)"]
     end
 
     Android -->|Built & Signed via| Script
     Script -->|Uploads Artifact to| GHReleases
-    Web -->|Automated Git Deploy| Vercel
-    Vercel -->|Direct Download Link| GHReleases
 ```
 
 ---
 
 ## Directory Layout
 - **`/` (Root):** Contains the Android application source code, Gradle configurations, and the release generation automation script.
-- **`/web`:** Contains the landing page source code (Vite, Tailwind CSS v4, HTML/JS).
 - **`/docs`:** Contains system architecture documentation, external references, and technical learnings (ADRs).
 
 ---
@@ -100,4 +95,4 @@ sequenceDiagram
 ## Production Build & Distribution Flow
 1. **Keystore Management:** Keystore credentials and keystore properties are maintained locally using PowerShell automation (`./generate_release.ps1`).
 2. **Release Artifacts:** Built release APKs are placed inside `releases/RestYourEyes.apk`.
-3. **Web Distribution:** The web landing page links directly to the latest GitHub release artifact, keeping app distribution synchronized without frontend re-deployments.
+3. **Web Distribution:** The product page links directly to the latest GitHub release artifact, keeping app distribution synchronized without frontend re-deployments.
