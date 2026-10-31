@@ -1,3 +1,60 @@
 <resources>
     <string name="app_name">Rest Your Eyes</string>
+    <string name="app_tagline">Salud y descanso visual con la regla 20-20-20</string>
+    <string name="rule_explanation">Cada 20 minutos de pantalla, mira a un punto a 6 metros (20 pies) de distancia durante 20 segundos para relajar el enfoque ocular.</string>
+
+    <!-- Estado del Servicio -->
+    <string name="status_card_title">Estado del rastreador</string>
+    <string name="status_active">Rastreo activo</string>
+    <string name="status_inactive">Rastreo inactivo</string>
+    <string name="status_active_description">Monitoreando tiempo de pantalla en segundo plano</string>
+    <string name="status_inactive_description">Servicio en pausa. Inicia el rastreo para recibir avisos.</string>
+
+    <!-- Permisos -->
+    <string name="permission_overlay_title">Permiso de superposición requerido</string>
+    <string name="permission_overlay_desc">Se requiere permiso para mostrar la pantalla de descanso sobre otras apps.</string>
+    <string name="permission_overlay_action">Otorgar permiso</string>
+
+    <string name="permission_notification_title">Notificaciones del sistema</string>
+    <string name="permission_notification_desc">Permite notificaciones para mantener visible el estado del rastreador en la barra de tareas.</string>
+    <string name="permission_notification_action">Habilitar notificaciones</string>
+
+    <!-- Temporizadores y Ajustes -->
+    <string name="section_timers_title">Intervalos</string>
+    <string name="work_duration_format">Intervalo de aviso: %1$d min</string>
+    <string name="break_duration_format">Descanso: %1$d seg</string>
+
+    <string name="section_preferences_title">Preferencias</string>
+    <string name="pref_vibration_title">Vibración al descansar</string>
+    <string name="pref_vibration_desc">Vibra al iniciar la pantalla de descanso</string>
+    <string name="pref_auto_dismiss_title">Cerrar automáticamente</string>
+    <string name="pref_auto_dismiss_desc">Cierra la pantalla tras completar los segundos</string>
+
+    <!-- Acciones Principales -->
+    <string name="action_start_tracking">INICIAR RASTREO</string>
+    <string name="action_stop_tracking">DETENER RASTREO</string>
+
+    <!-- Mensajes Feedback Snackbar -->
+    <string name="snackbar_setting_saved">Ajuste guardado</string>
+    <string name="snackbar_vibration_enabled">Vibración activada</string>
+    <string name="snackbar_vibration_disabled">Vibración desactivada</string>
+    <string name="snackbar_auto_dismiss_enabled">Cierre automático activado</string>
+    <string name="snackbar_auto_dismiss_disabled">Cierre automático desactivado</string>
+    <string name="snackbar_service_started">Rastreador activado y funcionando en segundo plano</string>
+    <string name="snackbar_service_stopped">El rastreo de tiempo se ha detenido</string>
+
+    <!-- Notificación en Foreground -->
+    <string name="notification_channel_name">Rastreador de Descanso Visual</string>
+    <string name="notification_channel_desc">Rastrea el tiempo activo de pantalla</string>
+    <string name="notification_title">Rest Your Eyes</string>
+    <string name="notification_active_format">Rastreo activo: descanso de %1$d s cada %2$d min</string>
+
+    <!-- Pantalla Overlay -->
+    <string name="overlay_rule_title">Regla 20-20-20</string>
+    <string name="overlay_instructions_format">Mira hacia otro lado (a 6 metros / 20 pies) por %1$d segundos.</string>
+    <string name="overlay_completed_title">¡Descanso completado!</string>
+    <string name="overlay_completed_subtitle">Tus ojos están listos para continuar.</string>
+    <string name="overlay_action_skip">Omitir descanso</string>
+    <string name="overlay_action_done">Continuar</string>
+    <string name="overlay_seconds_unit">segundos</string>
 </resources>

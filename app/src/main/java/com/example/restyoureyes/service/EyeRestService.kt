@@ -1,19 +1,42 @@
 package com.example.restyoureyes.service
 
-import android.app.*
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Build
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
+import com.example.restyoureyes.MainActivity
 import com.example.restyoureyes.OverlayActivity
 import com.example.restyoureyes.R
 import com.example.restyoureyes.data.SettingsRepository
-import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 
 class EyeRestService : Service() {
+
+    companion object {
+        private const val CHANNEL_ID = "eye_rest_channel"
+        private const val NOTIFICATION_ID = 1
+
+        private val _isServiceRunning = MutableStateFlow(false)
+        val isServiceRunning: StateFlow<Boolean> = _isServiceRunning.asStateFlow()
+    }
 
     private val serviceScope = CoroutineScope(Dispatchers.Main + Job())
     private lateinit var settingsRepository: SettingsRepository
@@ -28,15 +51,21 @@ class EyeRestService : Service() {
     override fun onCreate() {
         super.onCreate()
         settingsRepository = SettingsRepository(applicationContext)
+        _isServiceRunning.value = true
         
         createNotificationChannel()
-        startForeground(1, createNotification(20)) // Default initial value
+        startForeground(NOTIFICATION_ID, createNotification(20, 20))
 
         serviceScope.launch {
-            settingsRepository.breakDurationFlow.collect { seconds ->
-                val notification = createNotification(seconds)
+            combine(
+                settingsRepository.breakDurationFlow,
+                settingsRepository.workDurationFlow
+            ) { breakSec, workMin ->
+                Pair(breakSec, workMin)
+            }.collect { (breakSec, workMin) ->
+                val notification = createNotification(breakSec, workMin)
                 val manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-                manager.notify(1, notification)
+                manager.notify(NOTIFICATION_ID, notification)
             }
         }
 
@@ -69,21 +98,21 @@ class EyeRestService : Service() {
     private fun startTimer() {
         timerJob?.cancel()
         timerJob = serviceScope.launch {
-            val workDurationMin = settingsRepository.workDurationFlow.first()
-            val targetTimeMs = workDurationMin * 60 * 1000L
-            
-            while (isActive) {
-                val currentRemainingMs = targetTimeMs - accumulatedScreenTimeMs
-                if (currentRemainingMs <= 0) {
-                    showOverlay()
-                    accumulatedScreenTimeMs = 0L
-                    screenOnTimestamp = System.currentTimeMillis()
-                } else {
-                    delay(currentRemainingMs)
-                    // If delay finishes without cancellation, time is up
-                    showOverlay()
-                    accumulatedScreenTimeMs = 0L
-                    screenOnTimestamp = System.currentTimeMillis()
+            settingsRepository.workDurationFlow.collectLatest { workDurationMin ->
+                val targetTimeMs = workDurationMin * 60 * 1000L
+                
+                while (isActive) {
+                    val currentRemainingMs = targetTimeMs - accumulatedScreenTimeMs
+                    if (currentRemainingMs <= 0) {
+                        showOverlay()
+                        accumulatedScreenTimeMs = 0L
+                        screenOnTimestamp = System.currentTimeMillis()
+                    } else {
+                        delay(currentRemainingMs)
+                        showOverlay()
+                        accumulatedScreenTimeMs = 0L
+                        screenOnTimestamp = System.currentTimeMillis()
+                    }
                 }
             }
         }
@@ -98,6 +127,7 @@ class EyeRestService : Service() {
 
     override fun onDestroy() {
         super.onDestroy()
+        _isServiceRunning.value = false
         unregisterReceiver(screenStateReceiver)
         serviceScope.cancel()
     }
@@ -107,22 +137,33 @@ class EyeRestService : Service() {
     private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
-                "eye_rest_channel",
-                "Eye Rest Tracker",
+                CHANNEL_ID,
+                getString(R.string.notification_channel_name),
                 NotificationManager.IMPORTANCE_LOW
             ).apply {
-                description = "Rastrea el tiempo activo de pantalla"
+                description = getString(R.string.notification_channel_desc)
             }
             val manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             manager.createNotificationChannel(channel)
         }
     }
 
-    private fun createNotification(seconds: Int): Notification {
-        return NotificationCompat.Builder(this, "eye_rest_channel")
-            .setContentTitle("Rest Your Eyes")
-            .setContentText("Descansa la vista, mira a otra parte por $seconds segundos")
+    private fun createNotification(breakSec: Int, workMin: Int): Notification {
+        val pendingIntent = PendingIntent.getActivity(
+            this,
+            0,
+            Intent(this, MainActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
+            },
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+        )
+
+        return NotificationCompat.Builder(this, CHANNEL_ID)
+            .setContentTitle(getString(R.string.notification_title))
+            .setContentText(getString(R.string.notification_active_format, breakSec, workMin))
             .setSmallIcon(R.mipmap.ic_launcher)
+            .setContentIntent(pendingIntent)
+            .setOngoing(true)
             .setPriority(NotificationCompat.PRIORITY_LOW)
             .build()
     }

@@ -11,11 +11,15 @@ import androidx.core.view.WindowCompat
 
 private val DarkColorScheme = darkColorScheme(
     primary = PrimaryAccent,
+    onPrimary = OnPrimaryColor,
     background = DarkBackground,
-    surface = SurfaceColor,
-    onPrimary = androidx.compose.ui.graphics.Color.White,
     onBackground = TextPrimary,
-    onSurface = TextPrimary
+    surface = SurfaceColor,
+    onSurface = TextPrimary,
+    surfaceVariant = SurfaceVariantColor,
+    onSurfaceVariant = TextSecondary,
+    error = DangerAccent,
+    onError = OnPrimaryColor
 )
 
 @Composable
