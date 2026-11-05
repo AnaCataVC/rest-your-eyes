@@ -7,19 +7,38 @@ import android.os.VibrationEffect
 import android.os.Vibrator
 import android.os.VibratorManager
 import androidx.activity.ComponentActivity
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.compose.setContent
 import androidx.lifecycle.lifecycleScope
 import com.example.restyoureyes.data.SettingsRepository
+import com.example.restyoureyes.data.StatsRepository
 import com.example.restyoureyes.ui.screens.OverlayScreen
 import com.example.restyoureyes.ui.theme.RestYourEyesTheme
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import java.util.concurrent.atomic.AtomicBoolean
 
 class OverlayActivity : ComponentActivity() {
+
+    private lateinit var statsRepository: StatsRepository
+    private val isOutcomeRecorded = AtomicBoolean(false)
+    private var hasTimeExpired = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         
         val settingsRepository = SettingsRepository(applicationContext)
+        statsRepository = StatsRepository(applicationContext)
+
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                if (hasTimeExpired) {
+                    recordCompletedAndFinish()
+                } else {
+                    recordSkippedAndFinish()
+                }
+            }
+        })
 
         lifecycleScope.launch {
             val vibrationEnabled = settingsRepository.vibrationEnabledFlow.first()
@@ -32,8 +51,51 @@ class OverlayActivity : ComponentActivity() {
             RestYourEyesTheme {
                 OverlayScreen(
                     settingsRepository = settingsRepository,
-                    onDismiss = { finish() }
+                    onTimeExpired = {
+                        hasTimeExpired = true
+                    },
+                    onCompleted = {
+                        recordCompletedAndFinish()
+                    },
+                    onSkipped = {
+                        recordSkippedAndFinish()
+                    }
                 )
+            }
+        }
+    }
+
+    private fun recordCompletedAndFinish() {
+        if (isOutcomeRecorded.compareAndSet(false, true)) {
+            lifecycleScope.launch {
+                statsRepository.recordBreakCompleted()
+                finish()
+            }
+        } else {
+            finish()
+        }
+    }
+
+    private fun recordSkippedAndFinish() {
+        if (isOutcomeRecorded.compareAndSet(false, true)) {
+            lifecycleScope.launch {
+                statsRepository.recordBreakSkipped()
+                finish()
+            }
+        } else {
+            finish()
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        if (isOutcomeRecorded.compareAndSet(false, true)) {
+            lifecycleScope.launch {
+                if (hasTimeExpired) {
+                    statsRepository.recordBreakCompleted()
+                } else {
+                    statsRepository.recordBreakSkipped()
+                }
             }
         }
     }

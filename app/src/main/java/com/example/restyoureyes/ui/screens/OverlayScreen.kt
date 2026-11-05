@@ -42,7 +42,9 @@ import kotlinx.coroutines.flow.first
 @Composable
 fun OverlayScreen(
     settingsRepository: SettingsRepository,
-    onDismiss: () -> Unit
+    onTimeExpired: () -> Unit = {},
+    onCompleted: () -> Unit,
+    onSkipped: () -> Unit
 ) {
     var isInitialized by rememberSaveable { mutableStateOf(false) }
     var timeLeft by rememberSaveable { mutableIntStateOf(20) }
@@ -63,8 +65,10 @@ fun OverlayScreen(
             timeLeft--
         }
 
+        onTimeExpired()
+
         if (autoDismiss) {
-            onDismiss()
+            onCompleted()
         }
     }
 
@@ -154,7 +158,7 @@ fun OverlayScreen(
             // Acciones con microcopy empático
             if (timeLeft <= 0) {
                 Button(
-                    onClick = onDismiss,
+                    onClick = onCompleted,
                     modifier = Modifier
                         .fillMaxWidth(0.65f)
                         .height(50.dp)
@@ -167,7 +171,7 @@ fun OverlayScreen(
                 }
             } else {
                 OutlinedButton(
-                    onClick = onDismiss,
+                    onClick = onSkipped,
                     modifier = Modifier
                         .fillMaxWidth(0.65f)
                         .height(50.dp)

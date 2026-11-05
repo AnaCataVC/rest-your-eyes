@@ -9,6 +9,7 @@ import android.provider.Settings
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -24,10 +25,12 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
@@ -37,11 +40,13 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -49,6 +54,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
@@ -78,6 +84,13 @@ fun SettingsScreen(viewModel: MainViewModel) {
     val breakDuration by viewModel.breakDuration.collectAsState()
     val vibrationEnabled by viewModel.vibrationEnabled.collectAsState()
     val autoDismiss by viewModel.autoDismiss.collectAsState()
+
+    val weeklyMetrics by viewModel.weeklyMetrics.collectAsState()
+    val historicalMetrics by viewModel.historicalMetrics.collectAsState()
+    var selectedStatsTab by remember { mutableIntStateOf(0) }
+    var showResetDialog by remember { mutableStateOf(false) }
+
+    val activeMetrics = if (selectedStatsTab == 0) weeklyMetrics else historicalMetrics
 
     var hasOverlayPermission by remember {
         mutableStateOf(if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) Settings.canDrawOverlays(context) else true)
@@ -248,6 +261,235 @@ fun SettingsScreen(viewModel: MainViewModel) {
                         }
                     }
                 }
+            }
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            // Break statistics & visual adherence card
+            Card(
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Column(modifier = Modifier.padding(16.dp)) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = stringResource(R.string.stats_card_title),
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.SemiBold,
+                            color = MaterialTheme.colorScheme.primary
+                        )
+
+                        if (activeMetrics.total > 0 || historicalMetrics.total > 0) {
+                            TextButton(
+                                onClick = { showResetDialog = true }
+                            ) {
+                                Text(
+                                    text = stringResource(R.string.stats_action_reset),
+                                    style = MaterialTheme.typography.labelMedium,
+                                    color = MaterialTheme.colorScheme.error
+                                )
+                            }
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    // Tab selector: [ Last 7 days ] | [ Historical (6 months) ]
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(
+                                color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
+                                shape = CircleShape
+                            )
+                            .padding(4.dp),
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        // Tab 0: Rolling 7 days
+                        Box(
+                            modifier = Modifier
+                                .weight(1f)
+                                .clip(CircleShape)
+                                .background(
+                                    if (selectedStatsTab == 0) MaterialTheme.colorScheme.primary
+                                    else Color.Transparent
+                                )
+                                .clickable { selectedStatsTab = 0 }
+                                .padding(vertical = 8.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = stringResource(R.string.stats_tab_weekly),
+                                style = MaterialTheme.typography.labelMedium,
+                                fontWeight = if (selectedStatsTab == 0) FontWeight.Bold else FontWeight.Normal,
+                                color = if (selectedStatsTab == 0) MaterialTheme.colorScheme.onPrimary
+                                else MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+
+                        // Tab 1: Historical
+                        Box(
+                            modifier = Modifier
+                                .weight(1f)
+                                .clip(CircleShape)
+                                .background(
+                                    if (selectedStatsTab == 1) MaterialTheme.colorScheme.primary
+                                    else Color.Transparent
+                                )
+                                .clickable { selectedStatsTab = 1 }
+                                .padding(vertical = 8.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = stringResource(R.string.stats_tab_historical),
+                                style = MaterialTheme.typography.labelMedium,
+                                fontWeight = if (selectedStatsTab == 1) FontWeight.Bold else FontWeight.Normal,
+                                color = if (selectedStatsTab == 1) MaterialTheme.colorScheme.onPrimary
+                                else MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    if (activeMetrics.total == 0) {
+                        // Empty state
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 12.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = stringResource(R.string.stats_empty_state),
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                textAlign = TextAlign.Center
+                            )
+                        }
+                    } else {
+                        // Metrics row: Completed vs Skipped
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceEvenly
+                        ) {
+                            // Completed
+                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                Text(
+                                    text = "${activeMetrics.completed}",
+                                    style = MaterialTheme.typography.headlineMedium,
+                                    fontWeight = FontWeight.Bold,
+                                    color = StatusActiveGreen
+                                )
+                                Text(
+                                    text = stringResource(R.string.stats_metric_completed),
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                            }
+
+                            // Skipped
+                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                Text(
+                                    text = "${activeMetrics.skipped}",
+                                    style = MaterialTheme.typography.headlineMedium,
+                                    fontWeight = FontWeight.Bold,
+                                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+                                )
+                                Text(
+                                    text = stringResource(R.string.stats_metric_skipped),
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                            }
+                        }
+
+                        Spacer(modifier = Modifier.height(16.dp))
+
+                        // Adherence progress indicator
+                        Text(
+                            text = stringResource(R.string.stats_compliance_title, activeMetrics.compliancePercentage),
+                            style = MaterialTheme.typography.bodyMedium,
+                            fontWeight = FontWeight.Medium,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                        Spacer(modifier = Modifier.height(6.dp))
+                        LinearProgressIndicator(
+                            progress = { activeMetrics.complianceRate },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(8.dp)
+                                .clip(CircleShape),
+                            color = StatusActiveGreen,
+                            trackColor = MaterialTheme.colorScheme.surfaceVariant
+                        )
+
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        // Dynamic supportive feedback
+                        val feedbackText = when {
+                            activeMetrics.compliancePercentage >= 80 -> stringResource(R.string.stats_feedback_high)
+                            activeMetrics.compliancePercentage >= 50 -> stringResource(R.string.stats_feedback_medium)
+                            else -> stringResource(R.string.stats_feedback_low)
+                        }
+                        Text(
+                            text = feedbackText,
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                }
+            }
+
+            if (showResetDialog) {
+                AlertDialog(
+                    onDismissRequest = { showResetDialog = false },
+                    title = {
+                        Text(
+                            text = stringResource(R.string.stats_reset_dialog_title),
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold
+                        )
+                    },
+                    text = {
+                        Text(
+                            text = stringResource(R.string.stats_reset_dialog_desc),
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+                    },
+                    confirmButton = {
+                        Button(
+                            onClick = {
+                                viewModel.resetStats()
+                                showResetDialog = false
+                                scope.launch {
+                                    snackbarHostState.currentSnackbarData?.dismiss()
+                                    snackbarHostState.showSnackbar(
+                                        context.getString(R.string.snackbar_stats_reset),
+                                        duration = SnackbarDuration.Short
+                                    )
+                                }
+                            },
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.error,
+                                contentColor = MaterialTheme.colorScheme.onError
+                            )
+                        ) {
+                            Text(stringResource(R.string.stats_reset_dialog_confirm))
+                        }
+                    },
+                    dismissButton = {
+                        OutlinedButton(
+                            onClick = { showResetDialog = false }
+                        ) {
+                            Text(stringResource(R.string.stats_reset_dialog_cancel))
+                        }
+                    }
+                )
             }
 
             Spacer(modifier = Modifier.height(20.dp))

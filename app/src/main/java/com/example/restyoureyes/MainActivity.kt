@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.restyoureyes.data.SettingsRepository
+import com.example.restyoureyes.data.StatsRepository
 import com.example.restyoureyes.ui.MainViewModel
 import com.example.restyoureyes.ui.screens.SettingsScreen
 import com.example.restyoureyes.ui.theme.RestYourEyesTheme
@@ -34,6 +35,7 @@ class MainActivity : ComponentActivity() {
         }
 
         val settingsRepository = SettingsRepository(applicationContext)
+        val statsRepository = StatsRepository(applicationContext)
 
         setContent {
             RestYourEyesTheme {
@@ -41,7 +43,7 @@ class MainActivity : ComponentActivity() {
                     factory = object : ViewModelProvider.Factory {
                         @Suppress("UNCHECKED_CAST")
                         override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                            return MainViewModel(settingsRepository) as T
+                            return MainViewModel(settingsRepository, statsRepository) as T
                         }
                     }
                 )

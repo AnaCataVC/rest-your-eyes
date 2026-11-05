@@ -57,4 +57,22 @@
     <string name="overlay_action_skip">Omitir descanso</string>
     <string name="overlay_action_done">Continuar</string>
     <string name="overlay_seconds_unit">segundos</string>
+
+    <!-- Estadísticas de Descanso Visual -->
+    <string name="stats_card_title">Tu progreso visual</string>
+    <string name="stats_tab_weekly">Últimos 7 días</string>
+    <string name="stats_tab_historical">Histórico (6 meses)</string>
+    <string name="stats_metric_completed">Cumplidos</string>
+    <string name="stats_metric_skipped">Omitidos</string>
+    <string name="stats_compliance_title">Efectividad visual: %1$d%%</string>
+    <string name="stats_empty_state">Sin descansos registrados aún en este período. ¡Comienza hoy a cuidar tu vista!</string>
+    <string name="stats_feedback_high">¡Excelente hábito! Tus ojos te lo agradecen.</string>
+    <string name="stats_feedback_medium">Buen ritmo. Intenta completar más pausas para relajar tu vista.</string>
+    <string name="stats_feedback_low">Cada pausa cuenta para prevenir la fatiga ocular.</string>
+    <string name="stats_action_reset">Reiniciar estadísticas</string>
+    <string name="stats_reset_dialog_title">¿Reiniciar todas las estadísticas?</string>
+    <string name="stats_reset_dialog_desc">Esta acción borrará de forma permanente todo el historial de descansos visuales acumulado. No se puede deshacer.</string>
+    <string name="stats_reset_dialog_confirm">Borrar historial</string>
+    <string name="stats_reset_dialog_cancel">Cancelar</string>
+    <string name="snackbar_stats_reset">Estadísticas reiniciadas correctamente</string>
 </resources>

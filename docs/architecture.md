@@ -86,9 +86,13 @@ sequenceDiagram
 
 ---
 
-## Data Persistence & Settings
-- App preferences (break interval, sound alert enabled, vibration) are stored using **Jetpack DataStore (Preferences)**.
-- Coroutine Flows (`Kotlin Flow`) expose live setting updates to both `MainViewModel` (for UI customization) and `EyeRestService` (for background scheduling).
+## Data Persistence & Compliance Metrics
+- **Settings DataStore:** User preferences (work duration, break duration, vibration, auto-dismiss) are stored reactively via `SettingsRepository`.
+- **Habit Compliance DataStore:** Visual break adherence (completed vs. skipped breaks) is tracked via `StatsRepository` using daily `epochDay` buckets:
+  - Rolling 7-day window for weekly progress.
+  - 180-day retention window with automatic pruning.
+  - Idempotent tracking guarded by `AtomicBoolean` across Compose recompositions and Android system Back gestures.
+- Coroutine Flows (`Kotlin Flow`) expose live updates to both `MainViewModel` (for Compose UI rendering) and `EyeRestService` (for background scheduling).
 
 ---
 
