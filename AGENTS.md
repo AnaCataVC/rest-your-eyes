@@ -18,7 +18,7 @@ El flujo de publicación de releases para Android está automatizado de extremo 
 
 1. **Pipeline Automatizado en CI/CD (Recomendado):**
    - Al hacer push de un tag de versión (`git tag vX.Y.Z && git push origin vX.Y.Z`), se dispara automáticamente el workflow `.github/workflows/release.yml`.
-   - El workflow decodifica el almacén de claves seguro desde `secrets.RELEASE_KEYSTORE_BASE64`, compila `assembleRelease`, genera el archivo criptográfico `RestYourEyes-vX.Y.Z.apk.sha256` y publica ambos assets en GitHub Releases.
+   - El workflow decodifica el almacén de claves seguro desde `secrets.RELEASE_KEYSTORE_BASE64`, compila `assembleRelease` y publica el APK en GitHub Releases (GitHub calcula y muestra el hash SHA-256 automáticamente en la web).
    - Si se requiere actualizar o rotar las credenciales del Keystore, se inyectan vía GitHub CLI:
      ```powershell
      [System.Convert]::ToBase64String([System.IO.File]::ReadAllBytes("release.jks")) | gh secret set RELEASE_KEYSTORE_BASE64 -R AnaCataVC/rest-your-eyes
@@ -33,9 +33,8 @@ El flujo de publicación de releases para Android está automatizado de extremo 
    ```
    El script compila, firma y extrae el APK final en `releases/RestYourEyes.apk`.
 3. **Artefactos Oficiales de Release:**
-   Los únicos entregables oficiales para cada versión en GitHub Releases son:
+   El único entregable oficial para cada versión en GitHub Releases es:
    - `RestYourEyes-vX.Y.Z.apk`
-   - `RestYourEyes-vX.Y.Z.apk.sha256`
 
 ## 📱 Consideraciones de Sistema (Android)
 - **Servicios en Segundo Plano (Background Services):** La aplicación utiliza un `ForegroundService` que se inicia automáticamente al arrancar el dispositivo (`BOOT_COMPLETED`). Cualquier cambio en la lógica del servicio debe garantizar su supervivencia y respetar las restricciones de consumo de batería de Android (Doze Mode).
